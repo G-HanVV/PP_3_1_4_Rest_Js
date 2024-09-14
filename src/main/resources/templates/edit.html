@@ -6,8 +6,9 @@
 </div>
 <div class="modal-body">
     <!--/*@thymesVar id="user" type="ru.kata.spring.boot_security.demo.Model.User"*/-->
-    <form class="col" action="#" th:action="@{/admin/edit}" th:object="${user}" method="post">
+    <form class="col" id="frmEdit" onsubmit="onSubmitAction(this)" th:object="${user}" >
         <div style="text-align: center;" class="col-8 mx-auto">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
             <div class="form-group row">
                 <label class="col col-form-label" for="id"><strong>Id</strong></label>
                 <input class="form-control-plaintext border" type="text" th:field="*{id}" placeholder="string" readonly="readonly"/>
@@ -47,3 +48,23 @@
         </div>
     </form>
 </div>
+<script>
+    function onSubmitAction(elem) {
+        event.preventDefault();
+        var fd = new FormData(elem);
+        var res =(async () => {
+            const res = await fetch('/edit',{
+                credentials: 'include',
+                method:'POST',
+                body: fd,
+                });
+        })();
+        $('#myModal').modal('hide');
+        setTimeout(function () {
+            getUsersTable();
+        }, 500);
+
+        return false;
+    }
+
+</script>
