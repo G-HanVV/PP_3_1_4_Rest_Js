@@ -18,10 +18,15 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 public class MyRest {
-    @Autowired
-    private UserServiceImp userService;
+    private final UserServiceImp userService;
+
     @Autowired
     private StringHttpMessageConverter stringHttpMessageConverter;
+
+    @Autowired
+    private MyRest(UserServiceImp userService) {
+        this.userService = userService;
+    }
 
     @GetMapping(value = "/clients")
     public ResponseEntity<List<User>> read() {

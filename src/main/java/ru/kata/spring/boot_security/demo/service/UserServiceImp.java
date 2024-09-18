@@ -27,10 +27,15 @@ import java.util.Set;
 public class UserServiceImp implements UserDetailsService, UserService {
     @PersistenceContext
     private EntityManager em;
+
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+
     @Autowired
-    UserRepository userRepository;
-    @Autowired
-    RoleRepository roleRepository;
+    public UserServiceImp(UserRepository userRepository, RoleRepository roleRepository) {
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -43,7 +48,7 @@ public class UserServiceImp implements UserDetailsService, UserService {
         for (Role role : user.getRoles()){
             grantedAuthorities.add(new SimpleGrantedAuthority(role.getName()));
         }
-        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), grantedAuthorities);
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
     }
 
     public User findUserByName(String username) {

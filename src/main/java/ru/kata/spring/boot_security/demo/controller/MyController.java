@@ -16,86 +16,20 @@ import ru.kata.spring.boot_security.demo.service.UserServiceImp;
 import java.util.List;
 
 @Controller
-@Transactional
 public class MyController {
-    @Autowired
-    private UserServiceImp userService;
+    private final UserServiceImp userService;
+
     @Autowired
     private StringHttpMessageConverter stringHttpMessageConverter;
 
-
-    @GetMapping("/admin")
-    public String userList(Model model) {
-        model.addAttribute("allUsers", userService.allUsers());
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String us=auth.getName();
-        model.addAttribute("user", userService.findUserByName(us));
-        model.addAttribute("newuser", new User());
-        List<Role> listRoles = userService.listRoles();
-        model.addAttribute("listRoles", listRoles);
-        return "admin";
+    @Autowired
+    private MyController(UserServiceImp userService) {
+        this.userService = userService;
     }
 
-    @PostMapping("/admin")
-    public String  deleteUser(@RequestParam(required = true, defaultValue = "" ) Long userId,
-                              @RequestParam(required = true, defaultValue = "" ) String action,
-                              Model model) {
-        if (action.equals("delete")){
-            userService.deleteUser(userId);
-        }
-        return "redirect:/admin";
-    }
-
-    @GetMapping("/user")
-    public String userdt(Model model) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String us=auth.getName();
-        User user = userService.findUserByName(us);
-        if (user == null) {user = new User();}
-        model.addAttribute("user", user);
-        return "user";
-    }
-
-    @RequestMapping (value = "/edit", method= RequestMethod.GET)
-    public String edit(ModelMap model, @RequestParam Long id) {
-        User user = userService.findUserById(id);
-        model.addAttribute("user", user);
-        List<Role> listRoles = userService.listRoles();
-        model.addAttribute("listRoles", listRoles);
-        return "edit";
-    }
-
-    @RequestMapping(value="/edit", method=RequestMethod.POST)
-    public void  edit(@ModelAttribute User model) {
-        userService.saveUser(model);
-        return;
-    }
-
-    @RequestMapping (value = "/delete", method= RequestMethod.GET)
-    public String del(ModelMap model, @RequestParam Long id) {
-        User user = userService.findUserById(id);
-        model.addAttribute("user", user);
-        List<Role> listRoles = userService.listRoles();
-        model.addAttribute("listRoles", listRoles);
-        return "delete";
-    }
-
-    @RequestMapping(value="delete", method= RequestMethod.POST)
-    public void deleteItem(@RequestParam Long id) {
-        userService.deleteUser(id);
-        return;
-    }
-    @RequestMapping(value = "/adminadd", method=RequestMethod.GET)
-    public String add(ModelMap model) {
-        User user = new User();
-        model.addAttribute("user", user);
-        return "adminadd";
-    }
-
-    @RequestMapping(value="/adminadd", method=RequestMethod.POST)
-    public String addNewOrder(@ModelAttribute User model) {
-        userService.saveUser(model);
-        return "redirect:/admin";
+    @GetMapping("/")
+    public String getIndex() {
+        return "index";
     }
 }
 

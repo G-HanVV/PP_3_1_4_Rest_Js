@@ -29,16 +29,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.csrfTokenRepository
-                        (CookieCsrfTokenRepository.withHttpOnlyFalse()))
+                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/admin/", "/admin", "/delete", "/edit").hasRole( "ADMIN")
-                .antMatchers("/user").hasAnyRole("USER", "ADMIN")
-                .antMatchers("/index", "/login").permitAll()
+                .antMatchers("/").authenticated()
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
-                .usernameParameter("email")
+                .usernameParameter("username")
                 .passwordParameter("password")
                 .successHandler(successUserHandler)
                 .permitAll()
