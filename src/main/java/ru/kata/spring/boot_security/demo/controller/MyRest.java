@@ -37,6 +37,15 @@ public class MyRest {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @GetMapping(value = "/roles")
+    public ResponseEntity<List<Role>> readroles() {
+        final List<Role> roles = userService.listRoles();
+
+        return roles != null &&  !roles.isEmpty()
+                ? new ResponseEntity<>(roles, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
     @PostMapping(value = "/client")
     public ResponseEntity<?> create(@RequestBody User model) {
         userService.saveUser(model);
