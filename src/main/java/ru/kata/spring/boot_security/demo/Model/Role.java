@@ -11,6 +11,7 @@ import javax.persistence.*;
 public class Role implements GrantedAuthority {
     @Id
     private Long id;
+    @Column(name = "authority")
     private String name;
     @Transient
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
